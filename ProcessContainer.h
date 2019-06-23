@@ -5,7 +5,7 @@ class ProcessContainer{
 private:
     std::vector<Process>_list;
 public:
-    ProcessContainer(){
+    ProcessContainer():_list{}{
         this->refreshList();
     }
     void refreshList();
@@ -15,11 +15,11 @@ public:
 
 void ProcessContainer::refreshList(){
     std::vector<std::string> pidList = ProcessParser::getPidList();
-    this->_list.clear();
+ /*    this->_list.clear();
     for(int i=0;i<pidList.size();i++){
         Process proc(pidList[i]);
         this->_list.push_back(proc);
-    }
+    }*/
 }
 std::string ProcessContainer::printList(){
     std::string result="";

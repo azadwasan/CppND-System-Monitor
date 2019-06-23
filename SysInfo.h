@@ -17,6 +17,7 @@ private:
     int totalProc;
     int runningProc;
     int threads;
+
 public:
 
     SysInfo(){
@@ -25,7 +26,7 @@ public:
     Initial data for individual cores is set
     System data is set
     */
-        this->getOtherCores(getNumberOfCores());
+        this->getOtherCores(4);
         this->setLastCpuMeasures();
         this->setAttributes();
         this-> OSname = ProcessParser::getOSName();
@@ -44,6 +45,7 @@ public:
     void getOtherCores(int _size);
     void setCpuCoresStats();
     std::vector<std::string> getCoresStats()const;
+    
 };
 void SysInfo::getOtherCores(int _size){
 //when number of cores is detected, vectors are modified to fit incoming data
