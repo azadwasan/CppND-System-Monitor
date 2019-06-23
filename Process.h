@@ -19,13 +19,13 @@ public:
         this->pid = pid;
         this->user = ProcessParser::getProcUser(pid);
        //complete for mem
- //        this->mem = ProcessParser::getSysRamPercent(pid);
+        this->mem = ProcessParser::getVmSize(pid);
         //complete for cmd
         this->cmd = ProcessParser::getCmd(pid);
         //complete for upTime
         this->upTime = ProcessParser::getProcUpTime(pid);        
         //complete for cpu
-        // this->cpu = processParser::get
+        this->cpu = ProcessParser::getCpuPercent(pid);
         //TODOs:
     }
     void setPid(int pid);
