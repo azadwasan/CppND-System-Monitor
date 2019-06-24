@@ -54,5 +54,5 @@ std::ifstream Util::getStream(std::string path){
         stream.close();
         throw std::runtime_error("Non - existing PID");
     }
-    return std::move(stream);
+    return stream;
 }

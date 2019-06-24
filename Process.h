@@ -16,12 +16,17 @@ private:
 
 public:
     Process(string pid){
-        this->pid = pid;
-        this->user = ProcessParser::getProcUser(pid);
-        this->mem = ProcessParser::getVmSize(pid);
-        this->cmd = ProcessParser::getCmd(pid);
-        this->upTime = ProcessParser::getProcUpTime(pid);        
-        this->cpu = ProcessParser::getCpuPercent(pid);
+            this->pid   = pid;
+        try{
+            this->user      = ProcessParser::getProcUser(pid);
+            this->mem       = ProcessParser::getVmSize(pid);
+            this->cmd       = ProcessParser::getCmd(pid);
+            this->upTime    = ProcessParser::getProcUpTime(pid);        
+            this->cpu       = ProcessParser::getCpuPercent(pid);
+        }
+        catch(exception& e){
+            throw e;
+        }
     }
     void setPid(int pid);
     string getPid()const;
@@ -46,8 +51,7 @@ string Process::getProcess(){
     this->upTime = ProcessParser::getProcUpTime(this->pid);
     this->cpu = ProcessParser::getCpuPercent(this->pid);
 
-    return this->pid + "   " + this->user + "   " + this->mem.substr(0, 5) + "   " + this->cpu.substr(0, 5) + "   " + this->upTime.substr(0, 5) + "   " + this->cmd.substr(0, 30) + "...";
-//    return (this->pid + "   " + this->user + "   " + this->cpu + "   " + this->mem + "   "  + this->upTime + "   " + this->cmd);    //TODO: finish the string! this->user + "   "+ mem...cpu...upTime...;
+    return this->pid + "   " + this->user + "   " + this->mem + "   " + this->cpu.substr + "   " + this->upTime.substr + "   " + this->cmd.substr(0, 50) + "    ";
 }
 
 std::string Process::getUser() const

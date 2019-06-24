@@ -144,7 +144,15 @@ string ProcessParser::getProcUser(string pid){
     string line;
     string name = "Uid:";
     string result ="";
-    ifstream stream = Util::getStream((Path::basePath() + pid + Path::statusPath()));
+    ifstream stream{};
+
+    try{
+        stream = Util::getStream((Path::basePath() + pid + Path::statusPath()));
+    }
+    catch(exception& e){
+        throw e;
+    }
+
     // Getting UID for user
     while (std::getline(stream, line)) {
         if (line.compare(0, name.size(),name) == 0) {
