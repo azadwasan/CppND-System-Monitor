@@ -23,7 +23,6 @@ using namespace std;
 
 class ProcessParser{
 private:
-    std::ifstream stream;
     public:
     static string getCmd(string pid);
     static vector<string> getPidList();
@@ -368,5 +367,10 @@ We use a formula to calculate overall activity of processor.
 }
 
 bool ProcessParser::isPidExisting(string pid){
+    for(auto& exist_pid : getPidList())
+    {
+        if(exist_pid.compare(pid) == 0)
+            return true;
+    }
     return false;
 }

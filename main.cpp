@@ -13,7 +13,51 @@
 
 using namespace std;
 
+//#define DEBUGMODE
 
+#ifdef DEBUGMODE
+ 
+ void writeSysInfoToConsole(SysInfo sys){
+    cout<< "OS: " << sys.getOSName()<<endl;
+    cout<< "Kernel version: " << sys.getKernelVersion();
+    cout<< "CPU: " << Util::getProgressBar(sys.getCpuPercent());
+    cout<< "Other cores:";
+    std::vector<std::string> val = sys.getCoresStats();
+    for(int i=0;i<val.size();i++){
+     cout<< val[i];
+    }
+    cout<<endl;
+    cout<< "Memory: ";
+    cout<< Util::getProgressBar(sys.getMemPercent());
+    cout<< "Total Processes:" << sys.getTotalProc();
+    cout<< "Running Processes:" << sys.getRunningProc();
+    cout<< "Up Time: " << Util::convertToTime(sys.getUpTime());
+}
+
+void getProcessListToConsole(std::vector<string> processes){
+    for(int i=0; i< processes.size();i++){
+        cout<<"Process string = "<<processes[i]<<endl;
+   }
+}
+void printMain(SysInfo sys,ProcessContainer procs){
+    int counter = 0;
+    while(1){
+        procs.refreshList();
+        std::vector<std::vector<std::string>> processes = procs.getList();
+        writeSysInfoToConsole(sys);
+        getProcessListToConsole(processes[counter]);
+        sleep(1);
+        if(counter ==  (processes.size() -1)){
+            counter = 0;
+        }
+        else {
+            counter ++;
+        }
+    }
+}
+
+
+#else
 char* getCString(std::string str){
     char * cstr = new char [str.length()+1];
     std::strcpy (cstr, str.c_str());
@@ -69,30 +113,31 @@ void printMain(SysInfo sys,ProcessContainer procs){
 	WINDOW *sys_win = newwin(17,xMax-1,0,0);
 	WINDOW *proc_win = newwin(15,xMax-1,18,0);
 
-
     init_pair(1,COLOR_BLUE,COLOR_BLACK);
     init_pair(2,COLOR_GREEN,COLOR_BLACK);
     int counter = 0;
     while(1){
-    box(sys_win,0,0);
-    box (proc_win,0,0);
-    procs.refreshList();
-    std::vector<std::vector<std::string>> processes = procs.getList();
-    writeSysInfoToConsole(sys,sys_win);
-    getProcessListToConsole(processes[counter],proc_win);
-    wrefresh(sys_win);
-    wrefresh(proc_win);
-    refresh();
-    sleep(1);
-    if(counter ==  (processes.size() -1)){
-        counter = 0;
-    }
-    else {
-        counter ++;
-    }
+        box(sys_win,0,0);
+        box (proc_win,0,0);
+        procs.refreshList();
+        std::vector<std::vector<std::string>> processes = procs.getList();
+        writeSysInfoToConsole(sys,sys_win);
+        getProcessListToConsole(processes[counter],proc_win);
+        wrefresh(sys_win);
+        wrefresh(proc_win);
+        refresh();
+        sleep(1);
+        if(counter ==  (processes.size() -1)){
+            counter = 0;
+        }
+        else {
+            counter ++;
+        }
     }
 	endwin();
 }
+#endif
+
 int main( int   argc, char *argv[] )
 {
  //Object which contains list of current processes, Container for Process Class

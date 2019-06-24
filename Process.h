@@ -18,15 +18,10 @@ public:
     Process(string pid){
         this->pid = pid;
         this->user = ProcessParser::getProcUser(pid);
-       //complete for mem
         this->mem = ProcessParser::getVmSize(pid);
-        //complete for cmd
         this->cmd = ProcessParser::getCmd(pid);
-        //complete for upTime
         this->upTime = ProcessParser::getProcUpTime(pid);        
-        //complete for cpu
         this->cpu = ProcessParser::getCpuPercent(pid);
-        //TODOs:
     }
     void setPid(int pid);
     string getPid()const;
@@ -43,6 +38,7 @@ void Process::setPid(int pid){
 string Process::getPid()const {
     return this->pid;
 }
+
 string Process::getProcess(){
     if(!ProcessParser::isPidExisting(this->pid))
         return "";
@@ -50,5 +46,30 @@ string Process::getProcess(){
     this->upTime = ProcessParser::getProcUpTime(this->pid);
     this->cpu = ProcessParser::getCpuPercent(this->pid);
 
-    return (this->pid + "   " + "mem, upTime, cpu");    //TODO: finish the string! this->user + "   "+ mem...cpu...upTime...;
+    return this->pid + "   " + this->user + "   " + this->mem.substr(0, 5) + "   " + this->cpu.substr(0, 5) + "   " + this->upTime.substr(0, 5) + "   " + this->cmd.substr(0, 30) + "...";
+//    return (this->pid + "   " + this->user + "   " + this->cpu + "   " + this->mem + "   "  + this->upTime + "   " + this->cmd);    //TODO: finish the string! this->user + "   "+ mem...cpu...upTime...;
+}
+
+std::string Process::getUser() const
+{
+    return this->user;
+}
+
+std::string Process::getCmd() const
+{
+    return this->cmd;
+}
+
+int Process::getCpu() const
+{
+    return std::stoi(this->cpu);
+}
+
+int Process::getMem() const
+{
+    return std::stoi(this->mem);
+}
+std::string Process::getUpTime() const
+{
+    return this->upTime;
 }
