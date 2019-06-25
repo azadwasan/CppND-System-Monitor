@@ -24,9 +24,9 @@ using namespace std;
 
 class ProcessParser{
     private:
-    static string fetchValue(string path, int index);
-    static vector<string> fetchValues(string path, string_view searchString);
-    static string fetchValue(string path, int index, string_view searchString);
+    static string fetchValue(string&& path, int index);
+    static vector<string> fetchValues(string&& path, string_view searchString);
+    static string fetchValue(string&& path, int index, string_view searchString);
 
     public:
     ProcessParser() = delete;
@@ -34,13 +34,13 @@ class ProcessParser{
     ProcessParser(ProcessParser&&) = delete;
     ~ProcessParser() = delete;
 
-    static string getCmd(string pid);
+    static string getCmd(const string pid);
     static vector<string> getPidList();
-    static std::string getVmSize(string pid);
-    static std::string getCpuPercent(string pid);
+    static std::string getVmSize(const string pid);
+    static std::string getCpuPercent(const string pid);
     static long int getSysUpTime();
-    static std::string getProcUpTime(string pid);
-    static string getProcUser(string pid);
+    static std::string getProcUpTime(const string pid);
+    static string getProcUser(const string pid);
     static int getNumberOfCores();
     static vector<string> getSysCpuPercent(string coreNumber = "");
     static float getSysActiveCpuTime(vector<string> values);
@@ -52,7 +52,7 @@ class ProcessParser{
     static int getNumberOfRunningProcesses();
     static string getOSName();
     static std::string PrintCpuStats(std::vector<std::string> values1, std::vector<std::string>values2);
-    static bool isPidExisting(string pid);
+    static bool isPidExisting(const string pid);
 
 };
 
@@ -79,7 +79,7 @@ vector<string> ProcessParser::getPidList(){
     return container;
 }
 
-string ProcessParser::getCmd(string pid){
+string ProcessParser::getCmd(const string pid){
     try{
         string line;
         ifstream stream = Util::getStream((Path::basePath() + pid + Path::cmdPath()));
@@ -95,7 +95,7 @@ string ProcessParser::getCmd(string pid){
     return string(70, ' ');
 }
 
-string ProcessParser::fetchValue(string path, int index){
+string ProcessParser::fetchValue(string&& path, int index){
     try{
         ifstream stream = Util::getStream(path);
         string line;
@@ -110,7 +110,7 @@ string ProcessParser::fetchValue(string path, int index){
     }
 }
 
-vector<string> ProcessParser::fetchValues(string path, string_view searchString){
+vector<string> ProcessParser::fetchValues(string&& path, string_view searchString){
     try{
         string line;
         ifstream stream = Util::getStream(path);
@@ -129,11 +129,10 @@ vector<string> ProcessParser::fetchValues(string path, string_view searchString)
     throw std::invalid_argument("Failed to find the search string.");
 }
 
-
-string ProcessParser::fetchValue(string path, int index, string_view searchString){
+string ProcessParser::fetchValue(string&& path, int index, string_view searchString){
     try{
         //TODO: Check if the index is in bounds
-         return fetchValues(path, searchString)[index];
+         return fetchValues(std::move(path), searchString)[index];
     }
     catch(exception& e){
         throw e;    
@@ -154,7 +153,7 @@ long int ProcessParser::getSysUpTime(){
     return 0;
 }
 
-std::string ProcessParser::getProcUpTime(string pid){
+std::string ProcessParser::getProcUpTime(const string pid){
     try{
         return to_string(float(stof(fetchValue(Path::basePath() + pid + "/" +  Path::statPath(),13))/sysconf(_SC_CLK_TCK)));
     }
@@ -194,7 +193,7 @@ string ProcessParser::getSysKernelVersion(){
     }
 }
 
-std::string ProcessParser::getVmSize(string pid){
+std::string ProcessParser::getVmSize(const string pid){
     try{
         return to_string(stof(fetchValue(Path::basePath() + pid + Path::statusPath(), 1, "VmData"))/float(1024*1024));
     }
@@ -278,7 +277,7 @@ vector<string> ProcessParser::getSysCpuPercent(string coreNumber){
     }
 }
 
-string ProcessParser::getProcUser(string pid){
+string ProcessParser::getProcUser(const string pid){
     string result ="";
     try{
         result = fetchValue(Path::basePath() + pid + Path::statusPath(), 1, "Uid");
@@ -304,7 +303,7 @@ string ProcessParser::getProcUser(string pid){
     return "";
 }
 
-std::string ProcessParser::getCpuPercent(string pid){
+std::string ProcessParser::getCpuPercent(const string pid){
     string line;
     string value;
     float result;
@@ -409,7 +408,7 @@ We use a formula to calculate overall activity of processor.
     return to_string(result);
 }
 
-bool ProcessParser::isPidExisting(string pid){
+bool ProcessParser::isPidExisting(const string pid){
     for(auto& exist_pid : getPidList())
     {
         if(exist_pid.compare(pid) == 0)

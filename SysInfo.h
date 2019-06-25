@@ -93,7 +93,7 @@ void SysInfo::setAttributes(){
 }
 // Constructing string for every core data display
 std::vector<std::string> SysInfo::getCoresStats()const{
-    std::vector<std::string> result= std::vector<std::string>();
+    std::vector<std::string> result= std::vector<std::string>{};
     for(int i=0;i<this->coresStats.size();i++){
         std::string temp =("cpu" + to_string(i) +": ");
         float check;
@@ -105,7 +105,7 @@ std::vector<std::string> SysInfo::getCoresStats()const{
         temp += Util::getProgressBar(this->coresStats[i]);
         result.push_back(temp);
     }
-    return result;
+    return std::move(result);
 }
 std::string SysInfo::getCpuPercent()const {
     return this->cpuPercent;

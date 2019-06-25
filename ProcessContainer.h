@@ -53,7 +53,7 @@ std::vector<std::vector<std::string>> ProcessContainer::getList(){
             values.push_back(sub);
         }
    }
-   return values;
+   return std::move(values);
 }
 
 std::vector<std::string> ProcessContainer::getList(int pageNumber){
@@ -62,7 +62,7 @@ std::vector<std::string> ProcessContainer::getList(int pageNumber){
     for(int i=start; i<ProcessContainer::_list.size() && i<start + PROCESS_LIST_SIZE; i++){
         stringifiedList.push_back(ProcessContainer::_list[i].getProcess());
     }
-   return stringifiedList;
+   return std::move(stringifiedList);
 
 }
 
