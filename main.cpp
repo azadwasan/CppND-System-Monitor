@@ -13,6 +13,7 @@
 
 using namespace std;
 
+#define USE_PROCESS_LIST_OPTIMIZATION
 //#define DEBUGMODE
 #ifdef DEBUGMODE
  void writeSysInfoToConsole(SysInfo sys){
@@ -39,18 +40,43 @@ void getProcessListToConsole(std::vector<string> processes){
 }
 void printMain(SysInfo sys,ProcessContainer procs){
     int counter = 0;
+    int listSize = 0;
     while(1){
+      //  writeSysInfoToConsole(sys);
+#ifdef  USE_PROCESS_LIST_OPTIMIZATION
+        listSize = procs.refreshList();
+        std::vector<std::string> processes = procs.getList(counter);
+        getProcessListToConsole(processes);
+
+        cout<<"Counter ="<<counter
+            <<", listSize = "<<listSize
+            <<", processes count = "<<processes.size()
+            <<", check ="<< ceil(float(listSize)/float(PROCESS_LIST_SIZE))
+            <<endl;
+
+#else
         procs.refreshList();
         std::vector<std::vector<std::string>> processes = procs.getList();
-        writeSysInfoToConsole(sys);
         getProcessListToConsole(processes[counter]);
-        sleep(1);
+
+        cout<<"Counter ="<<counter
+        <<", processes count = "<<processes.size()
+        <<endl;
+
+#endif
+#ifdef  USE_PROCESS_LIST_OPTIMIZATION
+        if(counter ==  (ceil(float(listSize)/float(PROCESS_LIST_SIZE)) -1)){
+            counter = 0;
+        }
+#else
         if(counter ==  (processes.size() -1)){
             counter = 0;
         }
+#endif
         else {
             counter ++;
         }
+        sleep(1);
     }
 }
 #else
@@ -110,20 +136,33 @@ void printMain(SysInfo sys,ProcessContainer procs){
     init_pair(1,COLOR_BLUE,COLOR_BLACK);
     init_pair(2,COLOR_GREEN,COLOR_BLACK);
     int counter = 0;
+    int listSize = 0;
     while(1){
         box(sys_win,0,0);
         box (proc_win,0,0);
+        writeSysInfoToConsole(sys,sys_win);
+#ifdef  USE_PROCESS_LIST_OPTIMIZATION
+        listSize = procs.refreshList();
+        std::vector<std::string> processes = procs.getList(counter);
+        getProcessListToConsole(processes,proc_win);
+#else
         procs.refreshList();
         std::vector<std::vector<std::string>> processes = procs.getList();
-        writeSysInfoToConsole(sys,sys_win);
         getProcessListToConsole(processes[counter],proc_win);
+#endif
         wrefresh(sys_win);
         wrefresh(proc_win);
         refresh();
         sleep(1);
+#ifdef  USE_PROCESS_LIST_OPTIMIZATION
+        if(counter ==  (ceil(float(listSize)/float(PROCESS_LIST_SIZE)) -1)){
+            counter = 0;
+        }
+#else
         if(counter ==  (processes.size() -1)){
             counter = 0;
         }
+#endif
         else {
             counter ++;
         }
@@ -135,14 +174,17 @@ void printMain(SysInfo sys,ProcessContainer procs){
 int main( int   argc, char *argv[] )
 {
  //Object which contains list of current processes, Container for Process Class
-    cout<<"Initiating process contaienr"<<endl;
     ProcessContainer procs;
 // Object which containts relevant methods and attributes regarding system details
     cout<<"Initiating sysInfo"<<endl;
-    SysInfo sys;
+    try{
+        SysInfo sys;
+        printMain(sys,procs);
+    }
+    catch(exception& e){
+        cout<<"Failed to fetch system info. Exiting!";
+        return 0;
+    }
     //std::string s = writeToConsole(sys);
-    cout<<"PrintMain()"<<endl;
-
-    printMain(sys,procs);
     return 0;
 }

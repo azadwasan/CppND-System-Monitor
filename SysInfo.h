@@ -20,17 +20,22 @@ private:
 
 public:
 
-    SysInfo(){
+    SysInfo() {
     /*
     Getting initial info about system
     Initial data for individual cores is set
     System data is set
     */
-        this->getOtherCores(4);
-        this->setLastCpuMeasures();
-        this->setAttributes();
-        this-> OSname = ProcessParser::getOSName();
-        this-> kernelVer = ProcessParser::getSysKernelVersion();
+       try{
+            this->getOtherCores(ProcessParser::getNumberOfCores());
+            this->setLastCpuMeasures();
+            this->setAttributes();
+            this-> OSname = ProcessParser::getOSName();
+            this-> kernelVer = ProcessParser::getSysKernelVersion();
+       }
+       catch(exception& e){
+           throw e;
+       }
     }
     void setAttributes();
     void setLastCpuMeasures();
@@ -49,11 +54,11 @@ public:
 };
 void SysInfo::getOtherCores(int _size){
 //when number of cores is detected, vectors are modified to fit incoming data
-        this->coresStats = std::vector<std::string>();
+        this->coresStats = std::vector<std::string>{};
         this->coresStats.resize(_size);
-        this->lastCpuCoresStats = std::vector<std::vector<std::string>>();
+        this->lastCpuCoresStats = std::vector<std::vector<std::string>>{};
         this->lastCpuCoresStats.resize(_size);
-        this->currentCpuCoresStats = std::vector<std::vector<std::string>>();
+        this->currentCpuCoresStats = std::vector<std::vector<std::string>>{};
         this->currentCpuCoresStats.resize(_size);
     for(int i=0;i<_size;i++){
         this->lastCpuCoresStats[i] = ProcessParser::getSysCpuPercent(to_string(i));

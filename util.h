@@ -3,12 +3,16 @@
 
 // Classic helper function
 class Util {
+    public:
+    //No instance allowed
+    Util()          = delete;
+    Util(Util&)     = delete;
+    Util(Util&&)    = delete;
+    ~Util()         = delete;
 
-public:
-
-static std::string convertToTime ( long int input_seconds );
-static std::string getProgressBar(std::string percent);
-static std::ifstream getStream(std::string path);
+    static std::string convertToTime ( long int input_seconds );
+    static std::string getProgressBar(std::string percent);
+    static std::ifstream getStream(std::string path);
 };
 
 std::string Util::convertToTime (long int input_seconds){
@@ -30,7 +34,7 @@ std::string Util::getProgressBar(std::string percent){
     try {
         boundaries = (stof(percent)/100)*_size;
     } catch (...){
-    boundaries = 0;
+        boundaries = 0;
     }
 
     for(int i=0;i<_size;i++){

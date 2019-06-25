@@ -16,11 +16,14 @@ private:
 
 public:
     Process(string pid){
-            this->pid   = pid;
+        this->pid   = pid;
         try{
             this->user      = ProcessParser::getProcUser(pid);
             this->mem       = ProcessParser::getVmSize(pid);
             this->cmd       = ProcessParser::getCmd(pid);
+            if(cmd.empty()){
+                this->cmd = string(70, ' ');
+            }
             this->upTime    = ProcessParser::getProcUpTime(pid);        
             this->cpu       = ProcessParser::getCpuPercent(pid);
         }
@@ -51,7 +54,7 @@ string Process::getProcess(){
     this->upTime = ProcessParser::getProcUpTime(this->pid);
     this->cpu = ProcessParser::getCpuPercent(this->pid);
 
-    return this->pid + "   " + this->user + "   " + this->mem + "   " + this->cpu + "   " + this->upTime + "   " + this->cmd.substr(0, 50) + "    ";
+    return this->pid + "   " + this->user + "   " + this->mem + "   " + this->cpu + "   " + this->upTime + "   " + this->cmd.substr(0, 50) + string(20, ' ');
 }
 
 std::string Process::getUser() const

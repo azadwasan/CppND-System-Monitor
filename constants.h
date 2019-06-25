@@ -1,6 +1,8 @@
 #include <string>
 using namespace std;
 
+const int PROCESS_LIST_SIZE = 10;
+
 enum CPUStates{
 	S_USER = 1,
 	S_NICE,
@@ -17,6 +19,7 @@ enum CPUStates{
 class Path{
 
 public:
+    Path() = delete;
     static string basePath() {
         return "/proc/";
     }
