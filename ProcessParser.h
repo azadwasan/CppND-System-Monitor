@@ -16,7 +16,6 @@
 #include <dirent.h>
 #include <time.h>
 #include <unistd.h>
-#include <string_view>
 #include <optional>
 #include "constants.h"
 
@@ -25,8 +24,8 @@ using namespace std;
 class ProcessParser{
     private:
     static string fetchValue(string&& path, int index);
-    static vector<string> fetchValues(string&& path, string_view searchString);
-    static string fetchValue(string&& path, int index, string_view searchString);
+    static vector<string> fetchValues(string&& path, string searchString);
+    static string fetchValue(string&& path, int index, string searchString);
 
     public:
     ProcessParser() = delete;
@@ -110,7 +109,7 @@ string ProcessParser::fetchValue(string&& path, int index){
     }
 }
 
-vector<string> ProcessParser::fetchValues(string&& path, string_view searchString){
+vector<string> ProcessParser::fetchValues(string&& path, string searchString){
     try{
         string line;
         ifstream stream = Util::getStream(path);
@@ -129,7 +128,7 @@ vector<string> ProcessParser::fetchValues(string&& path, string_view searchStrin
     throw std::invalid_argument("Failed to find the search string.");
 }
 
-string ProcessParser::fetchValue(string&& path, int index, string_view searchString){
+string ProcessParser::fetchValue(string&& path, int index, string searchString){
     try{
         //TODO: Check if the index is in bounds
          return fetchValues(std::move(path), searchString)[index];
